@@ -1,0 +1,72 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scenes/Hero.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Enemy.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/Game.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/CameraShake.gd" type="Script" id=4]
+
+[sub_resource type="LineShape2D" id=5]
+normal = Vector2( 1, 0 )
+
+[sub_resource type="LineShape2D" id=2]
+normal = Vector2( -1, 0 )
+
+[sub_resource type="LineShape2D" id=3]
+normal = Vector2( 0, 1 )
+
+[sub_resource type="LineShape2D" id=4]
+
+[node name="GAME" type="Node"]
+script = ExtResource( 3 )
+Enemy = ExtResource( 2 )
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Message" type="Label" parent="HUD"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -7.0
+margin_bottom = 7.0
+size_flags_stretch_ratio = 6.16
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 1.5
+
+[node name="StartHero" type="Position2D" parent="."]
+position = Vector2( 233, 128 )
+
+[node name="Hero" parent="." instance=ExtResource( 1 )]
+position = Vector2( 233, 128 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+script = ExtResource( 4 )
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+
+[node name="LEFT" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 0, 135 )
+scale = Vector2( 1, 1.35 )
+shape = SubResource( 5 )
+
+[node name="RIGHT" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 480, 135 )
+scale = Vector2( 1, 1.35 )
+shape = SubResource( 2 )
+
+[node name="TOP" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 240, 0 )
+scale = Vector2( 2.4, 1 )
+shape = SubResource( 3 )
+
+[node name="BOTTOM" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 233, 269 )
+scale = Vector2( 2.4, 1 )
+shape = SubResource( 4 )
