@@ -1,12 +1,13 @@
 extends KinematicBody2D
 
-signal die
+signal died
 export (int) var stop_dist = 15
 export (int) var min_move_speed = 10
 export (int) var max_move_speed = 100
 export (Vector2) var purpose
 
-onready var _animation_player = $AnimationPlayer
+onready var animation = $Animation
+onready var burst = $Burst
 
 
 func _physics_process(delta):
@@ -24,5 +25,13 @@ func _input(event):
 
 
 func die():
-	_animation_player.play("die")
-	emit_signal("die")
+	animation.play("die")
+
+
+func died():
+	emit_signal("died")
+	queue_free()
+
+
+func burst_effect():
+	burst.emitting = true
