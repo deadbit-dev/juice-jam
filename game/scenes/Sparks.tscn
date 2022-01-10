@@ -1,0 +1,18 @@
+[gd_scene format=2]
+
+[node name="Sparks" type="CPUParticles2D"]
+emitting = false
+amount = 7
+lifetime = 0.3
+one_shot = true
+explosiveness = 1.0
+local_coords = false
+emission_shape = 4
+emission_points = PoolVector2Array( 0, 0, 0, 0 )
+emission_normals = PoolVector2Array( 1, 0, -1, 0 )
+emission_colors = PoolColorArray(  )
+direction = Vector2( 0, 0 )
+spread = 10.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 100.0
+initial_velocity_random = 0.5
