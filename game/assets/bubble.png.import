@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/juice-sheet.png-6b4ad298334f1e7c6bcd4331f2a3fe9b.stex"
+path="res://.import/bubble.png-dd17930a71c5ad345ddb3eb8ec316790.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/juice-sheet.png"
-dest_files=[ "res://.import/juice-sheet.png-6b4ad298334f1e7c6bcd4331f2a3fe9b.stex" ]
+source_file="res://assets/bubble.png"
+dest_files=[ "res://.import/bubble.png-dd17930a71c5ad345ddb3eb8ec316790.stex" ]
 
 [params]
 
