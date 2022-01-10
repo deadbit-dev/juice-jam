@@ -1,19 +1,19 @@
 extends MarginContainer
 
+export var dt = 20.0
+
 onready var bar = $Bars/TimerBar/Progress
+onready var count = $Bars/TimerBar/Time
+onready var timer = $"../WinTimer"
 onready var tween = $Tween
 
-# var anim_time_left = 0
 
 func _ready():
-	var win_time = $"../WinTimer".wait_time
-	bar.max_value = win_time
-	# if not tween.is_active():
-	#	tween.start()
+	var win_time = timer.wait_time
+	bar.max_value = win_time * dt
 
 
 func _process(delta):
-	var time_left = $"../WinTimer".time_left
-	# tween.interpolate_property(self, "anim_time_left", anim_time_left, time_left, 0.01)
-	# bar.value = anim_time_left
-	bar.value = time_left
+	var time_left = timer.time_left
+	count.text =  "00:" + String(int(time_left))
+	bar.value = time_left * dt
