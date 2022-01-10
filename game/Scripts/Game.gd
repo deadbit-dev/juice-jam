@@ -9,6 +9,8 @@ export (PackedScene) var Enemy
 onready var win_timer = $WinTimer
 onready var spawn_timer = $SpawnTimer
 onready var hud = $HUD
+onready var camera = $ShakeCamera
+onready var hero_start_pos = $StartHero.position
 
 var Player: KinematicBody2D
 
@@ -42,16 +44,16 @@ func win():
 
 func spawn_player():
 	Player = Hero.instance()
-	Player.connect("die", self, "game_over")
-	Player.position = $StartHero.position
-	Player.purpose = $StartHero.position
+	Player.connect("died", self, "game_over")
+	Player.position = hero_start_pos
+	Player.purpose = hero_start_pos
 	add_child(Player)
 
 
 func spawn_enemy():
 	var enemy = Enemy.instance()
 	enemy.position = rand_pos_on_rect_edge(get_viewport().size)
-	enemy.connect("shake", $Camera2D, "shake_on")
+	enemy.connect("shake", camera, "shake_on")
 	add_child(enemy)
 	enemy.attack(Player)
 

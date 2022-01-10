@@ -2,42 +2,55 @@ extends CanvasLayer
 
 signal game
 
-export (String) var start = "PRESS TO START"
-export (String) var gameover = "GAMEOVER\n" + start
-export (String) var win = "CONGRATULATION\n" + start
-
-onready var ctrl = $Window
-onready var msg = $Window/Message
+onready var start = $Start
+onready var game_over = $GameOver
+onready var win = $Win
 onready var gui = $"../GUI"
 
 onready var state = $"../../GAME"
 
 
 func _ready():
-	ctrl.connect("mouse_click", self, "gui_game")
+	start.connect("mouse_click", self, "gui_game")
+	game_over.connect("mouse_click", self, "gui_start")
+	win.connect("mouse_click", self, "gui_start")
 	state.connect("gameover", self, "gui_gameover")
 	state.connect("win", self, "gui_win")
 	gui_start()
 
 
 func gui_start():
-	msg.text = start
-	ctrl.visible = true
+	gui.pause_mode = Node.PAUSE_MODE_STOP
+	gui.visible = false
+	game_over.pause_mode = Node.PAUSE_MODE_STOP
+	game_over.visible = false
+	win.pause_mode = Node.PAUSE_MODE_STOP
+	win.visible = false
+	start.pause_mode = Node.PAUSE_MODE_PROCESS
+	start.visible = true
 
 
 func gui_game():
-	ctrl.visible = false
+	start.pause_mode = Node.PAUSE_MODE_STOP
+	start.visible = false
+	game_over.pause_mode = Node.PAUSE_MODE_STOP
+	game_over.visible = false
+	win.pause_mode = Node.PAUSE_MODE_STOP
+	win.visible = false
+	gui.pause_mode = Node.PAUSE_MODE_PROCESS
 	gui.visible = true
 	emit_signal("game")
 
 
 func gui_gameover():
-	msg.text = gameover
+	gui.pause_mode = Node.PAUSE_MODE_STOP
 	gui.visible = false
-	ctrl.visible = true
+	game_over.pause_mode = Node.PAUSE_MODE_PROCESS
+	game_over.visible = true
 
 
 func gui_win():
-	msg.text = win
+	gui.pause_mode = Node.PAUSE_MODE_STOP
 	gui.visible = false
-	ctrl.visible = true
+	win.pause_mode = Node.PAUSE_MODE_PROCESS
+	win.visible = true

@@ -1,0 +1,85 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/VT323-Regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://scripts/WindowInputEvent.gd" type="Script" id=2]
+[ext_resource path="res://assets/bubble.png" type="Texture" id=3]
+
+[sub_resource type="DynamicFont" id=6]
+size = 25
+outline_size = 1
+outline_color = Color( 0.435294, 0.435294, 0.435294, 1 )
+font_data = ExtResource( 1 )
+
+[node name="Win" type="Control"]
+pause_mode = 1
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Message" type="Label" parent="."]
+modulate = Color( 0.435294, 0.454902, 0.478431, 1 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -190.0
+margin_top = -24.0
+margin_right = 190.0
+margin_bottom = 24.0
+custom_fonts/font = SubResource( 6 )
+text = "wow, are you win, how ? 
+this was impasible"
+align = 1
+valign = 1
+uppercase = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bubbles" type="CenterContainer" parent="."]
+
+[node name="Bubble" type="Sprite" parent="Bubbles"]
+position = Vector2( 441, 72 )
+texture = ExtResource( 3 )
+
+[node name="Bubble2" type="Sprite" parent="Bubbles"]
+position = Vector2( 365, 126 )
+texture = ExtResource( 3 )
+offset = Vector2( 20, -90 )
+
+[node name="Bubble3" type="Sprite" parent="Bubbles"]
+position = Vector2( 400, 192 )
+texture = ExtResource( 3 )
+
+[node name="Bubble4" type="Sprite" parent="Bubbles"]
+position = Vector2( 45, 56 )
+texture = ExtResource( 3 )
+
+[node name="Bubble5" type="Sprite" parent="Bubbles"]
+position = Vector2( 57, 221 )
+texture = ExtResource( 3 )
+
+[node name="Bubble6" type="Sprite" parent="Bubbles"]
+position = Vector2( 181, 36 )
+texture = ExtResource( 3 )
+
+[node name="Bubble7" type="Sprite" parent="Bubbles"]
+position = Vector2( 384, 205 )
+texture = ExtResource( 3 )
+offset = Vector2( 20, -90 )
+
+[node name="Bubble8" type="Sprite" parent="Bubbles"]
+position = Vector2( 300, 237 )
+texture = ExtResource( 3 )
+
+[node name="Bubble9" type="Sprite" parent="Bubbles"]
+position = Vector2( 125, 72 )
+texture = ExtResource( 3 )
+
+[node name="Bubble10" type="Sprite" parent="Bubbles"]
+position = Vector2( 116, 185 )
+texture = ExtResource( 3 )
