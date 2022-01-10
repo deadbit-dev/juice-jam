@@ -1,0 +1,97 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://scripts/CameraShake.gd" type="Script" id=1]
+[ext_resource path="res://scripts/Game.gd" type="Script" id=2]
+[ext_resource path="res://scenes/Enemy.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/Hero.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/GUI.tscn" type="PackedScene" id=5]
+[ext_resource path="res://assets/VT323-Regular.ttf" type="DynamicFontData" id=6]
+[ext_resource path="res://scripts/HUD.gd" type="Script" id=7]
+[ext_resource path="res://scripts/Window.gd" type="Script" id=8]
+
+[sub_resource type="DynamicFont" id=6]
+size = 30
+font_data = ExtResource( 6 )
+
+[sub_resource type="LineShape2D" id=5]
+normal = Vector2( 1, 0 )
+
+[sub_resource type="LineShape2D" id=2]
+normal = Vector2( -1, 0 )
+
+[sub_resource type="LineShape2D" id=3]
+normal = Vector2( 0, 1 )
+
+[sub_resource type="LineShape2D" id=4]
+
+[node name="GAME" type="Node"]
+script = ExtResource( 2 )
+Hero = ExtResource( 4 )
+Enemy = ExtResource( 3 )
+
+[node name="WinTimer" type="Timer" parent="."]
+wait_time = 60.0
+
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 1.5
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource( 7 )
+
+[node name="Window" type="Control" parent="HUD"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Message" type="Label" parent="HUD/Window"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -84.0
+margin_top = -24.0
+margin_right = 84.0
+margin_bottom = 24.0
+custom_fonts/font = SubResource( 6 )
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GUI" parent="." instance=ExtResource( 5 )]
+visible = false
+margin_bottom = 17.0
+
+[node name="Bounds" type="StaticBody2D" parent="."]
+
+[node name="LEFT" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 0, 135 )
+scale = Vector2( 1, 1.35 )
+shape = SubResource( 5 )
+
+[node name="RIGHT" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 480, 135 )
+scale = Vector2( 1, 1.35 )
+shape = SubResource( 2 )
+
+[node name="TOP" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 240, 0 )
+scale = Vector2( 2.4, 1 )
+shape = SubResource( 3 )
+
+[node name="BOTTOM" type="CollisionShape2D" parent="Bounds"]
+position = Vector2( 240, 270 )
+scale = Vector2( 2.4, 1 )
+shape = SubResource( 4 )
+
+[node name="StartHero" type="Position2D" parent="."]
+position = Vector2( 240, 135 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+script = ExtResource( 1 )

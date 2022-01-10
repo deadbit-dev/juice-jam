@@ -1,26 +1,59 @@
 extends Node
 
+signal gameover
+signal win
+
+export (PackedScene) var Hero
 export (PackedScene) var Enemy
+
+onready var win_timer = $WinTimer
+onready var spawn_timer = $SpawnTimer
+onready var hud = $HUD
+
+var Player: KinematicBody2D
 
 
 func _ready():
-	$Hero.connect("die", self, "game_over")
-	$SpawnTimer.connect("timeout", self, "spawn_enemy")
-	new_game()
+	win_timer.connect("timeout", self, "win")
+	spawn_timer.connect("timeout", self, "spawn_enemy")
+	hud.connect("game", self, "start_game")
 
 
-func new_game():
-	# TODO: HUD message ask about start
+func start_game():
 	randomize()
-	$Hero.born($StartHero.position)
-	$SpawnTimer.start()
+	spawn_player()
+	win_timer.start()
+	spawn_timer.start()
 
 
 func game_over():
-	# TODO: HUD message about defeat
-	$SpawnTimer.stop()
-	get_tree().call_group("enemies", "die")
-	new_game()
+	win_timer.stop()
+	spawn_timer.stop()
+	get_tree().call_group("enemies", "queue_free")
+	emit_signal("gameover")
+
+
+func win():
+	spawn_timer.stop()
+	get_tree().call_group("enemies", "queue_free")
+	Player.queue_free()
+	emit_signal("win")
+
+
+func spawn_player():
+	Player = Hero.instance()
+	Player.connect("die", self, "game_over")
+	Player.position = $StartHero.position
+	Player.purpose = $StartHero.position
+	add_child(Player)
+
+
+func spawn_enemy():
+	var enemy = Enemy.instance()
+	enemy.position = rand_pos_on_rect_edge(get_viewport().size)
+	enemy.connect("shake", $Camera2D, "shake_on")
+	add_child(enemy)
+	enemy.attack(Player)
 
 
 func rand_pos_on_rect_edge(size: Vector2):
@@ -44,11 +77,3 @@ func rand_pos_on_rect_edge(size: Vector2):
 			pos.x = 0
 			pos.y = height - (point - width)
 	return pos
-
-
-func spawn_enemy():
-	var enemy = Enemy.instance()
-	enemy.position = rand_pos_on_rect_edge(get_viewport().size)
-	enemy.connect("shake", $Camera2D, "shake_on")
-	add_child(enemy)
-	enemy.attack($Hero)

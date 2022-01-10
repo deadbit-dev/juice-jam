@@ -1,7 +1,7 @@
 extends Camera2D
 
-export var camera_shake_amount = 3
-export var timeShake = 0.3
+export var camera_shake_amount = 1.5
+export var timeShake = 0.2
 var elapsedtime = 0
 
 
