@@ -1,61 +1,79 @@
 extends Node
 
+signal start
+signal game
 signal gameover
-signal win
 
 export (PackedScene) var Hero
 export (PackedScene) var Enemy
 
-onready var win_timer = $WinTimer
-onready var spawn_timer = $SpawnTimer
 onready var hud = $HUD
 onready var camera = $ShakeCamera
+onready var point_timer = $PointTimer
+onready var spawn_timer = $SpawnTimer
 onready var hero_start_pos = $StartHero.position
 
-var Player: KinematicBody2D
+var player: KinematicBody2D
+var enemies: Array
+
+var points: int = 0
+var best_record: int = points
 
 
 func _ready():
-	win_timer.connect("timeout", self, "win")
-	spawn_timer.connect("timeout", self, "spawn_enemy")
-	hud.connect("game", self, "start_game")
+	hud.start.connect("mouse_click", self, "start_game")
+	hud.game_over.connect("mouse_click", self, "start_menu")
+	start_menu()
+
+
+func start_menu():
+	emit_signal("start")
 
 
 func start_game():
-	randomize()
+	randomize()	
+	init_timers()
 	spawn_player()
-	win_timer.start()
+	emit_signal("game")
+
+
+func init_timers():
+	point_timer.connect("timeout", self, "increase_points")
+	spawn_timer.connect("timeout", self, "spawn_enemy")
+	point_timer.start()
 	spawn_timer.start()
 
 
-func game_over():
-	win_timer.stop()
-	spawn_timer.stop()
-	get_tree().call_group("enemies", "queue_free")
-	emit_signal("gameover")
-
-
-func win():
-	spawn_timer.stop()
-	get_tree().call_group("enemies", "queue_free")
-	Player.queue_free()
-	emit_signal("win")
-
-
 func spawn_player():
-	Player = Hero.instance()
-	Player.connect("died", self, "game_over")
-	Player.position = hero_start_pos
-	Player.purpose = hero_start_pos
-	add_child(Player)
+	player = Hero.instance()
+	player.connect("died", self, "game_over")
+	player.position = hero_start_pos
+	player.purpose = hero_start_pos
+	add_child(player)
 
 
 func spawn_enemy():
 	var enemy = Enemy.instance()
-	enemy.position = rand_pos_on_rect_edge(get_viewport().size)
+	enemy.position = rand_pos_on_rect_edge(get_viewport().get_visible_rect().size)
 	enemy.connect("shake", camera, "shake_on")
+	enemies.append(enemy)
 	add_child(enemy)
-	enemy.attack(Player)
+	enemy.attack(player)
+
+
+func increase_points():
+	points += 1
+	if points > best_record:
+		best_record = points
+	point_timer.start()
+
+
+func game_over():
+	point_timer.stop()
+	spawn_timer.stop()
+	player.queue_free()
+	get_tree().call_group("enemies", "queue_free")
+	emit_signal("gameover")
 
 
 func rand_pos_on_rect_edge(size: Vector2):
