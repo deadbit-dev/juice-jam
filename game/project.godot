@@ -16,6 +16,10 @@ boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0.137255, 0.137255, 0.137255, 1 )
 config/icon="res://assets/bubble.png"
 
+[autoload]
+
+YandexSDK="*res://addons/yandex_sdk/yandex_sdk.gd"
+
 [display]
 
 window/size/width=480
@@ -29,6 +33,10 @@ window/stretch/aspect="keep"
 [editor]
 
 script_templates_search_path="res://scripts"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/yandex_sdk/plugin.cfg" )
 
 [physics]
 
