@@ -38,4 +38,4 @@ func gui_gameover():
 	game_over.pause_mode = Node.PAUSE_MODE_PROCESS
 	game_over.visible = true
 	points.text = "POINTS: " + String(game.points)
-	best_record.text = "BEST RECORD\n" + String(game.best_record)
+	best_record.text = "BEST RECORD: " + String(game.best_record)
