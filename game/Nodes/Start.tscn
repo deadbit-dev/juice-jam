@@ -33,7 +33,7 @@ anchor_bottom = 1.0
 script = ExtResource( 3 )
 
 [node name="TextAnimation" type="AnimationPlayer" parent="."]
-playback_speed = 2.5
+playback_speed = 3.0
 anims/print = SubResource( 10 )
 script = ExtResource( 2 )
 
@@ -48,6 +48,7 @@ uppercase = true
 percent_visible = 0.0
 
 [node name="BottomLeftBubbleSpawner" type="CPUParticles2D" parent="."]
+visible = false
 position = Vector2( -50, 300 )
 amount = 5
 lifetime = 10.0
@@ -61,6 +62,7 @@ initial_velocity_random = 0.15
 angular_velocity = 30.0
 
 [node name="BottomRightBubbleSpawner" type="CPUParticles2D" parent="."]
+visible = false
 position = Vector2( 530, 300 )
 amount = 5
 lifetime = 10.0
@@ -74,6 +76,7 @@ initial_velocity_random = 0.15
 angular_velocity = 30.0
 
 [node name="TopLeftBubbleSpawner" type="CPUParticles2D" parent="."]
+visible = false
 position = Vector2( -50, -30 )
 amount = 5
 lifetime = 10.0
@@ -87,6 +90,7 @@ initial_velocity_random = 0.15
 angular_velocity = 30.0
 
 [node name="TopRightBubbleSpawner" type="CPUParticles2D" parent="."]
+visible = false
 position = Vector2( 530, -30 )
 amount = 5
 lifetime = 10.0
