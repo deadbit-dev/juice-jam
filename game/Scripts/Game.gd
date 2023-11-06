@@ -3,9 +3,12 @@ extends Node
 signal start
 signal game
 signal gameover
+signal spawn_enemy
 
 export (PackedScene) var Hero
 export (PackedScene) var Enemy
+
+export (int) var enemy_spawn_offset = 50
 
 onready var hud = $HUD
 onready var camera = $ShakeCamera
@@ -17,12 +20,19 @@ var player: KinematicBody2D
 var enemies: Array
 
 var points: int = 0
-var best_record: int = points
+var best_record: int = 0
 
 
 func _ready():
+	connect_signals()
+	if OS.get_name() == "HTML5": init_sdk()
+	else: start_menu()
+func connect_signals():
 	hud.start.connect("mouse_click", self, "start_game")
 	hud.game_over.connect("mouse_click", self, "start_menu")
+	point_timer.connect("timeout", self, "increase_points")
+	spawn_timer.connect("timeout", self, "spawn_enemy")
+func init_sdk():
 	start_menu()
 
 
@@ -31,33 +41,43 @@ func start_menu():
 
 
 func start_game():
-	randomize()	
-	init_timers()
-	spawn_player()
-	emit_signal("game")
-
-
-func init_timers():
-	point_timer.connect("timeout", self, "increase_points")
-	spawn_timer.connect("timeout", self, "spawn_enemy")
+	randomize()
+	points = 0
 	point_timer.start()
 	spawn_timer.start()
+	spawn_player()
+	spawn_enemy()
+	emit_signal("game")
 
 
 func spawn_player():
 	player = Hero.instance()
-	player.connect("died", self, "game_over")
+	player.connect("player_die_start", self, "on_player_die")
+	player.connect("player_die_end", self, "game_over")
 	player.position = hero_start_pos
 	player.purpose = hero_start_pos
 	add_child(player)
 
 
+func on_player_die():
+	point_timer.stop()
+	spawn_timer.stop()
+	while(not enemies.empty()):
+		var enemy = enemies.pop_back()
+		if not is_instance_valid(enemy):
+			continue
+		enemy.die(true)
+
+
 func spawn_enemy():
 	var enemy = Enemy.instance()
-	enemy.position = rand_pos_on_rect_edge(get_viewport().get_visible_rect().size)
+	var game_field = get_viewport().get_visible_rect().grow(enemy_spawn_offset)
+	enemy.position = random_point_on_border(game_field)
 	enemy.connect("shake", camera, "shake_on")
+	enemy.sleeping = true
 	enemies.append(enemy)
 	add_child(enemy)
+	emit_signal("spawn_enemy", enemy)
 	enemy.attack(player)
 
 
@@ -69,31 +89,23 @@ func increase_points():
 
 
 func game_over():
-	point_timer.stop()
-	spawn_timer.stop()
-	player.queue_free()
-	get_tree().call_group("enemies", "queue_free")
+	ads_timer.start()
 	emit_signal("gameover")
 
 
-func rand_pos_on_rect_edge(size: Vector2):
-	var pos: Vector2
-	var width = size.x
-	var height = size.y
-	var point = randi() % int(width + width + height + height)
-	if point < (width + height):
-		if point < width:
-			pos.x = point
-			pos.y = 0
-		else:
-			pos.x = width
-			pos.y = point - width
+func random_point_on_border(rect: Rect2) -> Vector2:
+	var point = Vector2()
+	var border = randi() % 4
+	if border == 0:
+		point.x = rand_range(rect.position.x, rect.position.x + rect.size.x)
+		point.y = rect.position.y
+	elif border == 1:
+		point.x = rect.position.x + rect.size.x
+		point.y = rand_range(rect.position.y, rect.position.y + rect.size.y)
+	elif border == 2:
+		point.x = rand_range(rect.position.x, rect.position.x + rect.size.x)
+		point.y = rect.position.y + rect.size.y
 	else:
-		point = point - (width + height)
-		if point < width:
-			pos.x = width - point
-			pos.y = height
-		else:
-			pos.x = 0
-			pos.y = height - (point - width)
-	return pos
+		point.x = rect.position.x
+		point.y = rand_range(rect.position.y, rect.position.y + rect.size.y)
+	return point

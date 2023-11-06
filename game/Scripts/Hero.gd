@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
-signal died
+signal player_die_start
+signal player_die_end
+
 export (int) var stop_dist = 15
 export (int) var min_move_speed = 10
 export (int) var max_move_speed = 100
@@ -26,11 +28,12 @@ func _input(event):
 
 func die():
 	animation.play("die")
+	emit_signal("player_die_start")
 
 
-func died():
-	emit_signal("died")
+func on_die_end():
 	queue_free()
+	emit_signal("player_die_end")
 
 
 func burst_effect():

@@ -1,22 +1,25 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
+[ext_resource path="res://Scripts/TrackSystem.gd" type="Script" id=1]
 [ext_resource path="res://scripts/Game.gd" type="Script" id=2]
 [ext_resource path="res://Nodes/Enemy.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Nodes/Hero.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Nodes/GUI.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Nodes/HUD.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scripts/Shake.gd" type="Script" id=7]
+[ext_resource path="res://Nodes/Warning.tscn" type="PackedScene" id=8]
 
 [sub_resource type="LineShape2D" id=5]
-normal = Vector2( 1, 0 )
+normal = Vector2( 0, 1 )
 
 [sub_resource type="LineShape2D" id=2]
-normal = Vector2( -1, 0 )
+normal = Vector2( 0, 1 )
 
 [sub_resource type="LineShape2D" id=3]
 normal = Vector2( 0, 1 )
 
 [sub_resource type="LineShape2D" id=4]
+normal = Vector2( 0, 1 )
 
 [node name="GAME" type="Node"]
 script = ExtResource( 2 )
@@ -28,28 +31,34 @@ wait_time = 5.0
 one_shot = true
 
 [node name="PointTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 1.5
 one_shot = true
 
 [node name="SpawnTimer" type="Timer" parent="."]
-wait_time = 2.0
+wait_time = 1.5
+
+[node name="TrackSystem" type="Node" parent="."]
+script = ExtResource( 1 )
+Warning = ExtResource( 8 )
 
 [node name="HUD" parent="." instance=ExtResource( 6 )]
 
 [node name="GUI" parent="." instance=ExtResource( 5 )]
 visible = false
-margin_bottom = 17.0
+margin_bottom = 36.0
 
 [node name="Bounds" type="StaticBody2D" parent="."]
 
 [node name="LEFT" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 0, 135 )
-scale = Vector2( 1, 1.35 )
+rotation = -1.5708
+scale = Vector2( 1.35, 1 )
 shape = SubResource( 5 )
 
 [node name="RIGHT" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 480, 135 )
-scale = Vector2( 1, 1.35 )
+rotation = 1.5708
+scale = Vector2( 1.35, 1 )
 shape = SubResource( 2 )
 
 [node name="TOP" type="CollisionShape2D" parent="Bounds"]
@@ -59,6 +68,7 @@ shape = SubResource( 3 )
 
 [node name="BOTTOM" type="CollisionShape2D" parent="Bounds"]
 position = Vector2( 240, 270 )
+rotation = 3.14159
 scale = Vector2( 2.4, 1 )
 shape = SubResource( 4 )
 
