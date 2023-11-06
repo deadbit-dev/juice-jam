@@ -22,11 +22,39 @@ function InitPlayer(full, callback) {
     ysdk.getPlayer(full).then(_player => {
         player = _player;
         console.log('Player initialized');
-        
         callback();
      }).catch(err => {
-        console.log(err);
-        console.log('Player initialization error');
+        console.log('Player initialization error:', err);
+    });
+}
+
+
+let lb;
+function InitLeaderboard(callback) {
+    console.log('Leaderboard start initialisation');
+    ysdk.getLeaderboards().then(_lb => {
+        lb = _lb;
+        console.log('Leaderboard initialized');
+        callback();
+    }).catch(err => {
+        console.log('Leaderboard initialisation error:', err);
+    });
+}
+
+
+function SetLeaderboardScore(leaderboard, score) {
+    console.log('Leaderboard set score:', score);
+    lb.setLeaderboardScore(leaderboard, score);
+}
+
+
+function GetLeaderboardScore(leaderboard) {
+    return lb.getLeaderboardPlayerEntry(leaderboard).then(res => {
+        console.log('Leaderboard get score:', res.score);
+        return res.score;
+    }).catch(err => {
+        console.log('Leaderboard get error:', err);
+        if (err.code === 'LEADERBOARD_PLAYER_NOT_PRESENT') return 0;
     });
 }
 

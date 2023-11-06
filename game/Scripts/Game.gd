@@ -12,6 +12,7 @@ export (int) var enemy_spawn_offset = 50
 
 onready var hud = $HUD
 onready var camera = $ShakeCamera
+onready var ads_timer = $AdsTimer
 onready var point_timer = $PointTimer
 onready var spawn_timer = $SpawnTimer
 onready var hero_start_pos = $StartHero.position
@@ -27,16 +28,39 @@ func _ready():
 	connect_signals()
 	if OS.get_name() == "HTML5": init_sdk()
 	else: start_menu()
+
+
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		if event.scancode == KEY_0:
+			best_record = 0
+			YandexSDK.save_data({"best_record": best_record})
+			YandexSDK.set_leaderboard_score("main", best_record)
+
+
 func connect_signals():
 	hud.start.connect("mouse_click", self, "start_game")
 	hud.game_over.connect("mouse_click", self, "start_menu")
+	ads_timer.connect("timeout", YandexSDK, "show_ad")
 	point_timer.connect("timeout", self, "increase_points")
 	spawn_timer.connect("timeout", self, "spawn_enemy")
+
+
 func init_sdk():
+	YandexSDK.init_game()
+	YandexSDK.init_player()
+	YandexSDK.init_leaderboard()
+	YandexSDK.connect("data_loaded", self, "on_data_loaded")
+	YandexSDK.load_data(["best_record"])
+
+
+func on_data_loaded(data):
+	best_record = data.get("best_record", 0)
 	start_menu()
 
 
 func start_menu():
+	YandexSDK.show_ad()
 	emit_signal("start")
 
 
@@ -85,6 +109,8 @@ func increase_points():
 	points += 1
 	if points > best_record:
 		best_record = points
+		YandexSDK.save_data({"best_record": best_record})
+		YandexSDK.set_leaderboard_score("main", best_record)
 	point_timer.start()
 
 

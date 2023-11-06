@@ -1,19 +1,22 @@
 extends Node
 
 
-signal rewarded_ad(result)
-signal ad(result)
 signal game_initialized()
 signal player_initialized()
+signal leaderboard_initialized()
+signal ad(result)
+signal rewarded_ad(result)
 signal data_loaded(data)
 signal stats_loaded(stats)
 
 
 var game_inialized : bool = false
 var player_inialized : bool = false
+var leaderboard_inialized : bool = false
 
 var callback_game_initialized = JavaScript.create_callback(self, '_game_initialized')
 var callback_player_initialized = JavaScript.create_callback(self, '_player_initialized')
+var callback_leaderboard_initialized = JavaScript.create_callback(self, '_leaderboard_initialized')
 
 var callback_rewarded_ad = JavaScript.create_callback(self, '_rewarded_ad')
 var callback_ad = JavaScript.create_callback(self, '_ad')
@@ -31,6 +34,20 @@ func init_game():
 			window.InitGame(options, callback_game_initialized)
 
 
+func init_player():
+	if OS.has_feature("yandex"):
+		if not game_inialized:
+			yield(self, "game_initialized")
+		window.InitPlayer(false, callback_player_initialized)
+
+
+func init_leaderboard():
+	if OS.has_feature("yandex"):
+		if not game_inialized:
+			yield(self, "game_initialized")
+		window.InitLeaderboard(callback_leaderboard_initialized)
+
+
 func show_ad():
 	if OS.has_feature("yandex"):
 		if not game_inialized :
@@ -43,13 +60,6 @@ func show_rewarded_ad():
 		if not game_inialized :
 			yield(self, "game_initialized")
 		window.ShowAdRewardedVideo(callback_rewarded_ad)
-
-
-func init_player():
-	if OS.has_feature("yandex"):
-		if not game_inialized:
-			yield(self, "game_initialized")
-		window.InitPlayer(false, callback_player_initialized)
 
 
 func save_data(data: Dictionary, flush: bool = false):
@@ -92,6 +102,35 @@ func load_stats(keys: Array):
 		window.LoadStats(saves, callback_stats_loaded)
 
 
+func set_leaderboard_score(leaderboard, score):
+	if OS.has_feature("yandex"):
+		if not leaderboard_inialized:
+			yield(self, "leaderboard_initialized")
+		window.SetLeaderboardScore(leaderboard, score)
+
+
+func get_leaderboard_score(leaderboard):
+	if OS.has_feature("yandex"):
+		if not leaderboard_inialized:
+			yield(self, "leaderboard_initialized")
+		return window.GetLeaderboardScore(leaderboard)
+
+
+func _game_initialized(args):
+	game_inialized = true
+	emit_signal('game_initialized')
+
+
+func _player_initialized(args):
+	player_inialized = true
+	emit_signal('player_initialized')
+
+
+func _leaderboard_initialized(args):
+	leaderboard_inialized = true
+	emit_signal("leaderboard_initialized")
+
+
 func _rewarded_ad(args):
 	print("rewarded ad res: ", args[0])
 	emit_signal("rewarded_ad", args)
@@ -120,13 +159,3 @@ func _stats_loaded(args):
 		for i in range(keys.length):
 			result[keys[i]] = values[i]
 		emit_signal("stats_loaded", result)
-
-
-func _game_initialized(args):
-	game_inialized = true
-	emit_signal('game_initialized')
-
-
-func _player_initialized(args):
-	player_inialized = true
-	emit_signal('player_initialized')
