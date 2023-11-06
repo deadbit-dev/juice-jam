@@ -24,6 +24,7 @@ YandexSDK="*res://addons/yandex_sdk/yandex_sdk.gd"
 
 window/size/width=480
 window/size/height=270
+window/size/resizable=false
 window/size/fullscreen=true
 mouse_cursor/custom_image="res://assets/hand_cursor_32.png"
 mouse_cursor/tooltip_position_offset=Vector2( 0, 0 )
